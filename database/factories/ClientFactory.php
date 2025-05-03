@@ -21,7 +21,7 @@ class ClientFactory extends Factory
     {
         return [
             'name' => fake()->company(),
-            'address_line_1' => fake()->buildingNumber() .' '.fake()->streetAddress(),
+            'address_line_1' => fake()->streetAddress(),
             'address_line_2' => '',
             'city' => fake()->city(),
             'state' => '',
