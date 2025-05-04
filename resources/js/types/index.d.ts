@@ -61,3 +61,9 @@ export interface Client {
     notes? : string;
     invoices_count : number
 }
+
+export interface PaginationLinks {
+    url : string;
+    label : string;
+    active : boolean;
+}

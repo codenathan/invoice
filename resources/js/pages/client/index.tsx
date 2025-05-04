@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, Client } from '@/types';
+import { type BreadcrumbItem, Client, PaginationLinks } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
     Table,
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table"
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import { Pagination } from '@/components/pagination';
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -26,7 +27,15 @@ interface Flash {
     danger?: string;
 }
 
-export default function ClientIndex({clients}: {clients: Client[]}) {
+
+
+interface ClientData {
+    data: Client[];
+    links : PaginationLinks[]
+
+}
+
+export default function ClientIndex({clients}: {clients: ClientData}) {
 
     const { flash } = usePage<{flash : Flash}>().props;
 
@@ -54,8 +63,8 @@ export default function ClientIndex({clients}: {clients: Client[]}) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {clients.map((client) => (
-                                <TableRow>
+                            {clients.data.map((client) => (
+                                <TableRow key={client.id}>
                                     <TableCell className="font-medium">{client.id}</TableCell>
                                     <TableCell>{client.name}</TableCell>
                                     <TableCell className="text-right">
@@ -68,6 +77,10 @@ export default function ClientIndex({clients}: {clients: Client[]}) {
 
                         </TableBody>
                     </Table>
+
+                    <div className="mt-4">
+                        <Pagination links={clients.links} />
+                    </div>
 
                 </div>
             </div>
