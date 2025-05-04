@@ -41,3 +41,14 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Client {
+    id: number;
+    name: string;
+    address_line_1? : string;
+    address_line_2? : string;
+    city? : string;
+    state? : string;
+    postal_code? : string;
+    notes? : string;
+}

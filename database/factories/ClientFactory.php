@@ -26,6 +26,7 @@ class ClientFactory extends Factory
             'city' => fake()->city(),
             'state' => '',
             'postal_code' => fake()->postcode(),
+            'notes' => ''
         ];
     }
 }
