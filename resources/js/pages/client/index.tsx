@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, Client } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import {
     Table,
     TableBody,
@@ -10,6 +10,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -19,7 +21,21 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+interface Flash {
+    success?: string;
+    danger?: string;
+}
+
 export default function ClientIndex({clients}: {clients: Client[]}) {
+
+    const { flash } = usePage<{flash : Flash}>().props;
+
+    useEffect(() => {
+        if (flash.success) {
+            toast.success(flash.success)
+        }
+    })
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Clients" />

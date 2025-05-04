@@ -36,7 +36,8 @@ class ClientController extends Controller
 
         Client::create($data);
 
-        return to_route('client.index');
+        return to_route('client.index')
+                ->with('success', 'Client created successfully.');
     }
 
     public function edit(Client $client): Response
@@ -58,13 +59,15 @@ class ClientController extends Controller
 
         $client->update($request->all());
 
-        return to_route('client.index');
+        return to_route('client.index')
+                ->with('success', 'Client updated successfully.');
     }
 
     public function destroy(Client $client): RedirectResponse
     {
         $client->delete();
 
-        return to_route('client.index');
+        return to_route('client.index')
+                ->with('success', 'Client deleted successfully.');
     }
 }
