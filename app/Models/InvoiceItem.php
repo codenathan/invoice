@@ -12,6 +12,14 @@ class InvoiceItem extends Model
     /** @use HasFactory<InvoiceItemFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'description',
+        'quantity',
+        'rate',
+        'amount'
+    ];
+
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);

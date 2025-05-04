@@ -46,7 +46,7 @@ export default function ClientIndex({invoices}: {invoices: InvoiceData}) {
             <Head title="Clients" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex justify-end">
-                    <Link href={route('client.create')} className="text-indigo-500 underline">New Client</Link>
+                    <Link href={route('invoice.create')} className="text-indigo-500 underline">New Invoice</Link>
                 </div>
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
                     <Table>
