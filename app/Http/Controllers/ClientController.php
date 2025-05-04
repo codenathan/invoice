@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -21,7 +22,7 @@ class ClientController extends Controller
         return Inertia::render('client/create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'name' => 'required',
@@ -34,6 +35,28 @@ class ClientController extends Controller
         ]);
 
         Client::create($data);
+
+        return to_route('client.index');
+    }
+
+    public function edit(Client $client): Response
+    {
+        return Inertia::render('client/edit', ['client' => $client]);
+    }
+
+    public function update(Request $request, Client $client): RedirectResponse
+    {
+        $request->validate([
+            'name' => 'required',
+            'address_line_1' => 'string|nullable',
+            'address_line_2' => 'string|nullable',
+            'city' => 'string|nullable',
+            'state' => 'string|nullable',
+            'postal_code' => 'string|nullable',
+            'notes' => 'string|nullable'
+        ]);
+
+        $client->update($request->all());
 
         return to_route('client.index');
     }
