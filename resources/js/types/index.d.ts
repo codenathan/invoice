@@ -42,6 +42,14 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface Invoice {
+    id: number;
+    client_id: number;
+    client: Client;
+    date: string;
+    status: string;
+}
+
 export interface Client {
     id: number;
     name: string;
@@ -51,4 +59,5 @@ export interface Client {
     state? : string;
     postal_code? : string;
     notes? : string;
+    invoices_count : number
 }

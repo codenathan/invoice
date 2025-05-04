@@ -42,7 +42,11 @@ export default function ClientIndex({clients}: {clients: Client[]}) {
                                 <TableRow>
                                     <TableCell className="font-medium">{client.id}</TableCell>
                                     <TableCell>{client.name}</TableCell>
-                                    <TableCell className="text-right"><Link href={route('client.edit', client.id)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounde">Edit</Link></TableCell>
+                                    <TableCell className="text-right">
+                                        <Link href={route('client.edit', client.id)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounde">Edit</Link>
+                                        {client.invoices_count == 0 && <Link href={route('client.destroy', client.id)} method="delete" as="button" className="text-red-500" >Delete</Link>}
+
+                                    </TableCell>
                                 </TableRow>
                             ))}
 

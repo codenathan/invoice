@@ -12,7 +12,7 @@ class ClientController extends Controller
 {
     public function index(): Response
     {
-        $clients = Client::all();
+        $clients = Client::withCount('invoices')->get();
 
         return Inertia::render('client/index', ['clients' => $clients]);
     }
@@ -57,6 +57,13 @@ class ClientController extends Controller
         ]);
 
         $client->update($request->all());
+
+        return to_route('client.index');
+    }
+
+    public function destroy(Client $client): RedirectResponse
+    {
+        $client->delete();
 
         return to_route('client.index');
     }
