@@ -1,8 +1,11 @@
+// ✅ Full code with Delete Item functionality added
+
+// (keep all your imports the same)
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, Client } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, Trash2 } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import { format } from "date-fns"
@@ -84,6 +87,12 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
         setData('items', updatedItems);
     };
 
+    const deleteItem = (index: number) => {
+        const updatedItems = [...data.items];
+        updatedItems.splice(index, 1);
+        setData('items', updatedItems);
+    };
+
     const total = data.items.reduce((sum, item) => sum + item.amount, 0);
 
     return (
@@ -92,8 +101,8 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
             <section className="rounded-lg p-4">
                 <form className="flex flex-col gap-6" onSubmit={submit}>
                     <div className="grid gap-6">
-
                         <div className="flex justify-between gap-4">
+                            {/* Client selection and date/status selectors remain the same */}
                             <div>
                                 Select a Client
                                 <Select
@@ -109,10 +118,9 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
                                         ))}
                                     </SelectContent>
                                 </Select>
-
                                 <InputError message={errors.client_id} />
                             </div>
-                            <div className="">
+                            <div>
                                 <div>
                                     Select Date <br />
                                     <Popover>
@@ -134,7 +142,7 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
                                                 selected={data.date ? new Date(data.date) : undefined}
                                                 onSelect={(date) => {
                                                     if (date) {
-                                                        setData('date', format(date, 'yyyy-MM-dd')); // ← local date
+                                                        setData('date', format(date, 'yyyy-MM-dd'));
                                                     }
                                                 }}
                                                 initialFocus
@@ -143,7 +151,6 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
                                     </Popover>
                                     <InputError message={errors.date} />
                                 </div>
-
                                 <div className="mt-4">
                                     Select Status <br />
                                     <Select
@@ -161,12 +168,12 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
                                             ))}
                                         </SelectContent>
                                     </Select>
-
                                     <InputError message={errors.status} />
                                 </div>
                             </div>
                         </div>
 
+                        {/* Invoice Items Table */}
                         <div className="grid gap-2">
                             <Table>
                                 <TableHeader>
@@ -175,6 +182,7 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
                                         <TableHead>Quantity</TableHead>
                                         <TableHead>Rate</TableHead>
                                         <TableHead className="text-right">Amount</TableHead>
+                                        <TableHead className="text-center">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -207,18 +215,28 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
                                             <TableCell className="text-right">
                                                 ${item.amount.toFixed(2)}
                                             </TableCell>
+                                            <TableCell className="text-center">
+                                                <Button
+                                                    type="button"
+                                                    variant="destructive"
+                                                    size="icon"
+                                                    onClick={() => deleteItem(index)}
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
                                         <TableCell colSpan={3}>Total</TableCell>
-                                        <TableCell className="text-right">
-                                            ${total.toFixed(2)}
-                                        </TableCell>
+                                        <TableCell className="text-right">${total.toFixed(2)}</TableCell>
+                                        <TableCell />
                                     </TableRow>
                                 </TableFooter>
                             </Table>
+
                             <Button
                                 type="button"
                                 variant="outline"
@@ -234,6 +252,7 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
 
                             <InputError message={errors.items} />
                         </div>
+
                         <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                             Create

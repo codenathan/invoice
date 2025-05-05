@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, Client, Invoice, InvoiceItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, Trash2 } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import { format } from "date-fns";
@@ -77,6 +77,11 @@ export default function InvoiceEdit({ clients, invoice }: { clients: Client[], i
             [field]: numericValue,
         };
         updatedItems[index].amount = updatedItems[index].quantity * updatedItems[index].rate;
+        setData('items', updatedItems);
+    };
+
+    const deleteItem = (index: number) => {
+        const updatedItems = data.items.filter((_, i) => i !== index);
         setData('items', updatedItems);
     };
 
@@ -171,6 +176,7 @@ export default function InvoiceEdit({ clients, invoice }: { clients: Client[], i
                                         <TableHead>Quantity</TableHead>
                                         <TableHead>Rate</TableHead>
                                         <TableHead className="text-right">Amount</TableHead>
+                                        <TableHead className="text-right">Delete</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -203,12 +209,23 @@ export default function InvoiceEdit({ clients, invoice }: { clients: Client[], i
                                             <TableCell className="text-right">
                                                 ${Number(item.amount).toFixed(2)}
                                             </TableCell>
+                                            <TableCell className="text-right">
+                                                <Button
+                                                    type="button"
+                                                    variant="destructive"
+                                                    size="icon"
+                                                    onClick={() => deleteItem(index)}
+                                                    className=""
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
-                                        <TableCell colSpan={3}>Total</TableCell>
+                                        <TableCell colSpan={4}>Total</TableCell>
                                         <TableCell className="text-right">
                                             ${total.toFixed(2)}
                                         </TableCell>
