@@ -75,6 +75,18 @@ export interface Client {
     invoices_count? : number
 }
 
+export interface BusinessSetting {
+    id: number;
+    name?: string;
+    address_line_1? : string;
+    address_line_2? : string;
+    city? : string;
+    state? : string;
+    postal_code? : string;
+    invoice_footer? : string;
+    logo? : string
+}
+
 export interface PaginationLinks {
     url : string;
     label : string;

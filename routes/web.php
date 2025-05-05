@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BusinessSettingController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('client', ClientController::class);
     Route::resource('invoice', InvoiceController::class);
+
+    Route::get('business-setting', [BusinessSettingController::class, 'index'])->name('business-setting.index');
+    Route::patch('business-setting', [BusinessSettingController::class, 'update'])->name('business-setting.update');
 });
 
 require __DIR__.'/settings.php';
