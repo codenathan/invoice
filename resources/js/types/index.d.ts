@@ -48,6 +48,19 @@ export interface Invoice {
     client: Client;
     date: string;
     status: string;
+    items : InvoiceItem[];
+    total_amount : number;
+}
+
+export interface InvoiceItem {
+    id: number;
+    invoice_id: number;
+    invoice: Invoice;
+    description: string;
+    name: string;
+    quantity: number;
+    rate: number;
+    amount: number;
 }
 
 export interface Client {
@@ -59,7 +72,7 @@ export interface Client {
     state? : string;
     postal_code? : string;
     notes? : string;
-    invoices_count : number
+    invoices_count? : number
 }
 
 export interface PaginationLinks {
@@ -67,3 +80,5 @@ export interface PaginationLinks {
     label : string;
     active : boolean;
 }
+
+
