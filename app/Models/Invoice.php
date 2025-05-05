@@ -27,6 +27,8 @@ class Invoice extends Model
     /** @use HasFactory<InvoiceFactory> */
     use HasFactory;
 
+    protected $appends = ['total_amount'];
+
     public function items(): HasMany
     {
         return $this->hasMany(InvoiceItem::class);
@@ -40,5 +42,12 @@ class Invoice extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function getTotalAmountAttribute()
+    {
+        return $this->items->sum(function ($item) {
+            return $item->quantity * $item->rate;
+        });
     }
 }

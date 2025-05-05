@@ -48,17 +48,19 @@ export interface Invoice {
     client: Client;
     date: string;
     status: string;
+    items : InvoiceItem[];
+    total_amount : number;
 }
 
 export interface InvoiceItem {
     id: number;
     invoice_id: number;
     invoice: Invoice;
+    description: string;
     name: string;
     quantity: number;
     rate: number;
-    total_price: number;
-    notes: string;
+    amount: number;
 }
 
 export interface Client {

@@ -1,20 +1,20 @@
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, Client } from '@/types';
+import { type BreadcrumbItem, Client, Invoice, InvoiceItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
 import {
     Select,
@@ -22,7 +22,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 import {
     Table,
@@ -32,13 +32,13 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import { InvoiceStatus, InvoiceStatusLabels } from '@/types/enums';
 import InputError from '@/components/input-error';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Invoice Create',
+        title: 'Edit Invoice',
         href: '/client',
     },
 ];
@@ -50,45 +50,41 @@ type InvoiceFormItem = {
     amount: number;
 };
 
-type InvoiceForm = {
-    id: number | null;
-    client_id: number | null;
-    date: string;
-    status: InvoiceStatus;
-    items: InvoiceFormItem[];
-};
-
-export default function InvoiceCreate({ clients }: { clients: Client[] }) {
-    const { data, setData, post, processing, errors } = useForm<InvoiceForm>({
-        id: null,
-        client_id: null,
-        date: '',
-        status: InvoiceStatus.Draft,
-        items: [{
-            description: '',
-            quantity: 1,
-            rate: 0,
-            amount: 0,
-        }],
+export default function InvoiceEdit({ clients, invoice }: { clients: Client[], invoice: Invoice }) {
+    const { data, setData, patch, processing, errors } = useForm({
+        id: invoice.id,
+        client_id: invoice.client_id ?? null,
+        date: invoice.date ? format(new Date(invoice.date), 'yyyy-MM-dd') : '',
+        status: invoice.status,
+        items: invoice.items.map((item: InvoiceItem) => ({
+            description: item.description ?? '',
+            quantity: Number(item.quantity ?? 0),
+            rate: Number(item.rate ?? 0),
+            amount: Number(item.amount ?? 0),
+        })),
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('invoice.store'));
+        patch(route('invoice.update', invoice.id));
     };
 
     const updateItem = (index: number, field: keyof InvoiceFormItem, value: string | number) => {
         const updatedItems = [...data.items];
-        (updatedItems[index] as any)[field] = field === 'description' ? value : Number(value);
+        const numericValue = field === 'description' ? value : Number(value);
+        updatedItems[index] = {
+            ...updatedItems[index],
+            [field]: numericValue,
+        };
         updatedItems[index].amount = updatedItems[index].quantity * updatedItems[index].rate;
         setData('items', updatedItems);
     };
 
-    const total = data.items.reduce((sum, item) => sum + item.amount, 0);
+    const total = data.items.reduce((sum, item) => sum + Number(item.amount), 0);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Client Create" />
+            <Head title="Edit Invoice" />
             <section className="rounded-lg p-4">
                 <form className="flex flex-col gap-6" onSubmit={submit}>
                     <div className="grid gap-6">
@@ -112,7 +108,7 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
 
                                 <InputError message={errors.client_id} />
                             </div>
-                            <div className="">
+                            <div>
                                 <div>
                                     Select Date <br />
                                     <Popover>
@@ -124,8 +120,8 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
                                                     !data.date && "text-muted-foreground"
                                                 )}
                                             >
-                                                <CalendarIcon />
-                                                {data.date ? format(data.date, "PPP") : <span>Pick a date</span>}
+                                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                                {data.date ? format(new Date(data.date), "PPP") : <span>Pick a date</span>}
                                             </Button>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-auto p-0" align="start">
@@ -134,7 +130,7 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
                                                 selected={data.date ? new Date(data.date) : undefined}
                                                 onSelect={(date) => {
                                                     if (date) {
-                                                        setData('date', format(date, 'yyyy-MM-dd')); // ← local date
+                                                        setData('date', format(date, 'yyyy-MM-dd'));
                                                     }
                                                 }}
                                                 initialFocus
@@ -205,7 +201,7 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
                                                 />
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                ${item.amount.toFixed(2)}
+                                                ${Number(item.amount).toFixed(2)}
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -235,8 +231,8 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
                             <InputError message={errors.items} />
                         </div>
                         <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
-                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Create
+                            {processing && <LoaderCircle className="h-4 w-4 animate-spin mr-2" />}
+                            Update
                         </Button>
                     </div>
                 </form>

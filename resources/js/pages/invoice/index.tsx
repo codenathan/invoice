@@ -57,6 +57,7 @@ export default function ClientIndex({invoices}: {invoices: InvoiceData}) {
                                 <TableHead>Date</TableHead>
                                 <TableHead>Client Name</TableHead>
                                 <TableHead>Status</TableHead>
+                                <TableHead>Amount</TableHead>
                                 <TableHead className="text-right">Action</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -67,6 +68,7 @@ export default function ClientIndex({invoices}: {invoices: InvoiceData}) {
                                     <TableCell>{invoice.date}</TableCell>
                                     <TableCell>{invoice.client.name}</TableCell>
                                     <TableCell>{invoice.status}</TableCell>
+                                    <TableCell>{invoice.total_amount}</TableCell>
                                     <TableCell className="text-right">
                                         <Link href={route('invoice.edit', invoice.id)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounde">Edit</Link>
                                     </TableCell>
