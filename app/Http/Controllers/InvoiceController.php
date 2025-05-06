@@ -12,9 +12,18 @@ class InvoiceController extends Controller
 {
     public function index(): Response
     {
-        $invoices = Invoice::with('client')->orderByDesc('date')->paginate(10);
+        $query = Invoice::with('client')->orderByDesc('date');
 
-        return Inertia::render('invoice/index', ['invoices' => $invoices]);
+        if (request()->has('filter') && request('filter') !== 'all') {
+            $query->where('status', request('filter'));
+        }
+
+        $invoices = $query->paginate(10);
+
+        return Inertia::render('invoice/index', [
+            'invoices' => $invoices,
+            'filter' => request('filter', 'all')
+        ]);
     }
 
     public function create(): Response
