@@ -114,6 +114,11 @@ export default function InvoiceEdit({ clients, invoice }: { clients: Client[], i
                                 <InputError message={errors.client_id} />
                             </div>
                             <div>
+                                <div className="mb-3">
+                                    <Button asChild>
+                                        <a href={route('invoice.pdf', invoice.id)}>Download PDF</a>
+                                    </Button>
+                                </div>
                                 <div>
                                     Select Date <br />
                                     <Popover>

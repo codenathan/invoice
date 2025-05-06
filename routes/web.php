@@ -3,6 +3,7 @@
 use App\Http\Controllers\BusinessSettingController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\InvoicePdfController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,6 +18,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('client', ClientController::class);
     Route::resource('invoice', InvoiceController::class);
+
+    Route::get('invoice/{invoice}/pdf', InvoicePdfController::class)->name('invoice.pdf');
 
     Route::get('business-setting', [BusinessSettingController::class, 'index'])->name('business-setting.index');
     Route::patch('business-setting', [BusinessSettingController::class, 'update'])->name('business-setting.update');

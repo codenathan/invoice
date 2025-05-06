@@ -30,4 +30,17 @@ class BusinessSetting extends Model
         'invoice_footer',
         'logo'
     ];
+
+    public function getAddressAttribute(): string
+    {
+        $parts = array_filter([
+            $this->address_line_1,
+            $this->address_line_2,
+            $this->city,
+            $this->state,
+            $this->postal_code,
+        ]);
+
+        return implode(',', $parts);
+    }
 }
