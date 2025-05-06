@@ -82,7 +82,11 @@ export default function InvoiceCreate({ clients }: { clients: Client[] }) {
 
     const updateItem = (index: number, field: keyof InvoiceFormItem, value: string | number) => {
         const updatedItems = [...data.items];
-        (updatedItems[index] as any)[field] = field === 'description' ? value : Number(value);
+        const numericValue = field === 'description' ? value : Number(value);
+        updatedItems[index] = {
+            ...updatedItems[index],
+            [field]: numericValue,
+        };
         updatedItems[index].amount = updatedItems[index].quantity * updatedItems[index].rate;
         setData('items', updatedItems);
     };
