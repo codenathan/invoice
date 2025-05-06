@@ -1,13 +1,14 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, BusinessSetting } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from "@/components/ui/textarea"
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useEffect } from 'react';
+import { toast } from 'sonner';
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -17,11 +18,24 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+interface Flash {
+    success?: string;
+    danger?: string;
+}
 
 
 export default function ClientEdit({businessSetting} : {businessSetting: BusinessSetting}) {
 
-    const { data, setData, patch, processing, errors } = useForm({
+    const { flash } = usePage<{flash : Flash}>().props;
+
+    useEffect(() => {
+        if (flash.success) {
+            toast.success(flash.success)
+        }
+    })
+
+
+    const { data, setData, post, processing, errors } = useForm({
         name: businessSetting.name,
         address_line_1 : businessSetting.address_line_1,
         address_line_2 : businessSetting.address_line_2,
@@ -30,18 +44,22 @@ export default function ClientEdit({businessSetting} : {businessSetting: Busines
         postal_code : businessSetting.postal_code,
         invoice_footer : businessSetting.invoice_footer,
         logo: null as File | null,
+        _method: 'patch',
     });
+
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        patch(route('business-setting.update', businessSetting.id));
+        post(route('business-setting.update', businessSetting.id), {
+            forceFormData: true,
+        });
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Client Create" />
             <section className="rounded-lg p-4">
-                <form className="flex flex-col gap-6"  onSubmit={submit}>
+                <form className="flex flex-col gap-6"  onSubmit={submit} encType="multipart/form-data">
                     <div className="grid gap-6">
                         <div className="grid gap-2">
                             <Label htmlFor="name">Name</Label>

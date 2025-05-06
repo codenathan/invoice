@@ -23,7 +23,6 @@ class BusinessSettingController extends Controller
 
     public function update(Request $request)
     {
-        dd($request->all(), $request->hasFile('logo'), $request->file('logo'));
         $data = $request->validate([
             'name' => 'required',
             'address_line_1' => 'string|nullable',

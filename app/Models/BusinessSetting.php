@@ -20,5 +20,14 @@ use Illuminate\Support\Carbon;
  */
 class BusinessSetting extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+        'address_line_1',
+        'address_line_2',
+        'city',
+        'state',
+        'postal_code',
+        'invoice_footer',
+        'logo'
+    ];
 }
