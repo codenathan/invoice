@@ -49,7 +49,17 @@ export interface Invoice {
     date: string;
     status: string;
     items : InvoiceItem[];
+    payments: Payment[];
     total_amount : number;
+}
+
+export interface Payment {
+    id: number;
+    invoice_id: number;
+    invoice: Invoice;
+    amount: number;
+    date: string;
+    description: string;
 }
 
 export interface InvoiceItem {

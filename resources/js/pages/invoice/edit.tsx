@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, Client, Invoice, InvoiceItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { LoaderCircle, Trash2 } from 'lucide-react';
 import { FormEventHandler } from 'react';
@@ -115,6 +115,9 @@ export default function InvoiceEdit({ clients, invoice }: { clients: Client[], i
                             </div>
                             <div>
                                 <div className="mb-3">
+                                    <Link href={route('invoice.payment', invoice.id)}>Manage Payments({invoice.payments.length})</Link>
+                                </div>
+                                <div className="mb-3">
                                     <Button asChild>
                                         <a href={route('invoice.pdf', invoice.id)}>Download PDF</a>
                                     </Button>
@@ -143,7 +146,6 @@ export default function InvoiceEdit({ clients, invoice }: { clients: Client[], i
                                                         setData('date', format(date, 'yyyy-MM-dd'));
                                                     }
                                                 }}
-                                                initialFocus
                                             />
                                         </PopoverContent>
                                     </Popover>

@@ -50,6 +50,7 @@ class InvoiceController extends Controller
     {
         $clients = Client::orderBy('name')->get(['id', 'name']);
         $invoice->load('items');
+        $invoice->load('payments');
         return Inertia::render(
             'invoice/edit',
             ['invoice' => $invoice, 'clients' => $clients]
