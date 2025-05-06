@@ -14,3 +14,12 @@
 - Ability to add invoice items to invoices
 - Ability to add payments to invoices
 - Ability to mark invoices with different status - draft / sent / paid / cancelled
+
+## Get Started
+```
+php artisan migrate:fresh --seed 
+```
+
+```
+npm run build
+```
