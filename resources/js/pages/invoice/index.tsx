@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, Client, Invoice, PaginationLinks } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { type BreadcrumbItem, Invoice, PaginationLinks } from '@/types';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import {
     Table,
     TableBody,
@@ -10,9 +10,18 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useEffect } from 'react';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from '@/components/ui/select';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Pagination } from '@/components/pagination';
+import { InvoiceStatus, InvoiceStatusLabels } from '@/types/enums';
+import { Pencil } from 'lucide-react';
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -32,7 +41,7 @@ interface InvoiceData {
     links : PaginationLinks[]
 }
 
-export default function ClientIndex({invoices}: {invoices: InvoiceData}) {
+export default function ClientIndex({invoices ,filter}: {invoices: InvoiceData, filter: string}) {
     const { flash } = usePage<{flash : Flash}>().props;
 
     useEffect(() => {
@@ -41,12 +50,42 @@ export default function ClientIndex({invoices}: {invoices: InvoiceData}) {
         }
     })
 
+    const [statusFilter, setStatusFilter] = useState<InvoiceStatus | 'all'>(filter as InvoiceStatus | 'all');
+
+    const handleFilterChange = (value: InvoiceStatus | 'all') => {
+        setStatusFilter(value);
+        router.get(route('invoice.index'), {
+            filter: value
+        }, {
+            preserveState: true,
+            preserveScroll: true
+        });
+    };
+
     return (
+
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Clients" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="flex justify-end">
-                    <Link href={route('invoice.create')} className="text-indigo-500 underline">New Invoice</Link>
+                <div className="flex justify-end gap-4 items-center">
+                    <div>
+                        <Link href={route('invoice.create')} className="text-indigo-500 underline">New Invoice</Link>
+                    </div>
+
+                    <div>
+                        <Select value={statusFilter} onValueChange={handleFilterChange}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Filter by status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Statuses</SelectItem>
+                                <SelectItem value={InvoiceStatus.Sent}>{InvoiceStatusLabels[InvoiceStatus.Sent]}</SelectItem>
+                                <SelectItem value={InvoiceStatus.Paid}>{InvoiceStatusLabels[InvoiceStatus.Paid]}</SelectItem>
+                                <SelectItem value={InvoiceStatus.Draft}>{InvoiceStatusLabels[InvoiceStatus.Draft]}</SelectItem>
+                                <SelectItem value={InvoiceStatus.Cancelled}>{InvoiceStatusLabels[InvoiceStatus.Cancelled]}</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
                     <Table>
@@ -58,7 +97,7 @@ export default function ClientIndex({invoices}: {invoices: InvoiceData}) {
                                 <TableHead>Client Name</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>Amount</TableHead>
-                                <TableHead className="text-right">Action</TableHead>
+                                <TableHead>Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -69,8 +108,8 @@ export default function ClientIndex({invoices}: {invoices: InvoiceData}) {
                                     <TableCell>{invoice.client.name}</TableCell>
                                     <TableCell>{invoice.status}</TableCell>
                                     <TableCell>{invoice.total_amount}</TableCell>
-                                    <TableCell className="text-right">
-                                        <Link href={route('invoice.edit', invoice.id)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounde">Edit</Link>
+                                    <TableCell>
+                                        <Link href={route('invoice.edit', invoice.id)}><Pencil className="h-4 w-4" /></Link>
                                     </TableCell>
                                 </TableRow>
                             ))}
