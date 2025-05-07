@@ -16,10 +16,10 @@
 - Ability to mark invoices with different status - draft / sent / paid / cancelled
 
 ## Get Started
-```
-php artisan migrate:fresh --seed 
-```
+Standard Laravel Installation, you will need to copy `.env.example` to `.env` and setup your db however you like
 
 ```
+composer install
 npm run build
+php artisan migrate:fresh --seed 
 ```
